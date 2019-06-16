@@ -57,10 +57,24 @@ namespace Baloons.ViewModel
         private RelayCommand closeAppCommand;
         public RelayCommand CloseAppCommand => closeAppCommand ?? (closeAppCommand = new RelayCommand(() => Application.Current.Shutdown()));
 
-        private BlowUpEffects blowUpEffect = BlowUpEffects.RunOut;
-
         private void BaloonBlownUp(object baloonModel, EventArgs e)
         {
+            BlowUpEffects blowUpEffect;
+            Random random = new Random();
+            int effect = random.Next(3);
+            if(effect == 0)
+            {
+                blowUpEffect = BlowUpEffects.RunOut;
+            }
+            else if(effect == 1)
+            {
+                blowUpEffect = BlowUpEffects.FadeOut;
+            }
+            else
+            {
+                blowUpEffect = BlowUpEffects.Rainbow;
+            }
+
             isBaloonBlownUp = true;
             Baloons.Add(CurrentBaloon);
             CurrentBaloon = null;
