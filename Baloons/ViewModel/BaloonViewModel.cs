@@ -21,7 +21,6 @@ namespace Baloons.ViewModel
             RaisePropertyChanged("Width");
             RaisePropertyChanged("Color");
             RaisePropertyChanged("TwineMargin");
-            RaisePropertyChanged("IsRunningOut");
         }
 
         Thickness margin = new Thickness(0);
