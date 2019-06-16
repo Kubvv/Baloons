@@ -48,26 +48,45 @@ namespace Baloons.ViewModel
             CurrentBaloon.BlownUp += BaloonBlownUp;
         }
 
-        private RelayCommand blowBaloonCommand;
-        public RelayCommand BlowBaloonCommand => blowBaloonCommand ?? (blowBaloonCommand = new RelayCommand(() => CurrentBaloon?.Blow()));
+        private RelayCommand inflateBaloonCommand;
+        public RelayCommand InflateBaloonCommand => inflateBaloonCommand ?? (inflateBaloonCommand = new RelayCommand(() => CurrentBaloon?.Inflate()));
 
-        private RelayCommand releaseBaloonCommand;
-        public RelayCommand ReleaseBaloonCommand => releaseBaloonCommand ?? (releaseBaloonCommand = new RelayCommand(() => CurrentBaloon?.Release()));
+        private RelayCommand deflateBaloonCommand;
+        public RelayCommand DeflateBaloonCommand => deflateBaloonCommand ?? (deflateBaloonCommand = new RelayCommand(() => CurrentBaloon?.Deflate()));
 
         private RelayCommand closeAppCommand;
         public RelayCommand CloseAppCommand => closeAppCommand ?? (closeAppCommand = new RelayCommand(() => Application.Current.Shutdown()));
+
+        private BlowUpEffects blowUpEffect = BlowUpEffects.Rainbow;
 
         private void BaloonBlownUp(object baloonModel, EventArgs e)
         {
             isBaloonBlownUp = true;
             Baloons.Add(CurrentBaloon);
             CurrentBaloon = null;
-            Baloons = new ObservableCollection<BaloonViewModel>(Baloons.OrderBy(baloon => baloon.Height).Reverse());
-            foreach (BaloonViewModel baloonViewModel in Baloons)
+
+            if (blowUpEffect == BlowUpEffects.Rainbow)
             {
-                baloonViewModel.SetCenter(CanvasWidth / 2, CanvasHeight - 10);
+                Baloons = new ObservableCollection<BaloonViewModel>(Baloons.OrderBy(baloon => baloon.Height).Reverse());
+                foreach (BaloonViewModel baloonViewModel in Baloons)
+                {
+                    baloonViewModel.SetCenter(CanvasWidth / 2, CanvasHeight - 10);
+                }
+            }
+            else if (blowUpEffect == BlowUpEffects.RunOut)
+            {
+                foreach (BaloonViewModel baloonViewModel in Baloons)
+                {
+                    baloonViewModel.IsRunningOut = true;
+                }
             }
             SystemSounds.Beep.Play();
         }
+    }
+
+    enum BlowUpEffects
+    {
+        Rainbow,
+        RunOut
     }
 }
