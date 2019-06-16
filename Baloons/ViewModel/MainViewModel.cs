@@ -57,7 +57,7 @@ namespace Baloons.ViewModel
         private RelayCommand closeAppCommand;
         public RelayCommand CloseAppCommand => closeAppCommand ?? (closeAppCommand = new RelayCommand(() => Application.Current.Shutdown()));
 
-        private BlowUpEffects blowUpEffect = BlowUpEffects.Rainbow;
+        private BlowUpEffects blowUpEffect = BlowUpEffects.RunOut;
 
         private void BaloonBlownUp(object baloonModel, EventArgs e)
         {
@@ -80,6 +80,13 @@ namespace Baloons.ViewModel
                     baloonViewModel.IsRunningOut = true;
                 }
             }
+            else if (blowUpEffect == BlowUpEffects.FadeOut)
+            {
+                foreach (BaloonViewModel baloonViewModel in Baloons)
+                {
+                    baloonViewModel.IsFadingOut = true;
+                }
+            }
             SystemSounds.Beep.Play();
         }
     }
@@ -87,6 +94,7 @@ namespace Baloons.ViewModel
     enum BlowUpEffects
     {
         Rainbow,
-        RunOut
+        RunOut,
+        FadeOut
     }
 }

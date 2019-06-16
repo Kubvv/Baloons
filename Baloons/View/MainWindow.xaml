@@ -25,33 +25,6 @@
         <KeyBinding Command="{Binding CloseAppCommand}"
                     Key="Esc" />
     </Window.InputBindings>
-    <Window.Resources>
-        <Style x:Key="RunOutStyle"
-            TargetType="{x:Type StackPanel}">
-            <Setter Property="RenderTransform">
-                                <Setter.Value>
-                                    <ScaleTransform ScaleY="0" />
-                                </Setter.Value>
-                            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsEnabled"
-                         Value="true">
-                    <Trigger.EnterActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <!--<DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                                                 To="0"
-                                                 Duration="0:0:5" />-->
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                                                    From="1"
-                                                                    Duration="0:00:05" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </Trigger.EnterActions>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
     <Grid>
         <ItemsControl ItemsSource="{Binding Path=Baloons}">
             <ItemsControl.ItemsPanel>
@@ -61,20 +34,21 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="{Binding Margin, Mode=OneWay}"
+                    <StackPanel Name="wholeBaloon"
+                                Margin="{Binding Margin, Mode=OneWay}"
                                 HorizontalAlignment="Left"
-                                VerticalAlignment="Top">
-                        <StackPanel.RenderTransform>
-                            <TranslateTransform />
-                        </StackPanel.RenderTransform>
-                        <Ellipse HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                IsManipulationEnabled="{Binding IsRunningOut, Mode=OneWay}">
+                        <Ellipse Name="baloon"
+                                 HorizontalAlignment="Left"
                                  VerticalAlignment="Top"
                                  Width="{Binding Width, Mode=OneWay}"
                                  Height="{Binding Height, Mode=OneWay}"
                                  Fill="{Binding Color, Mode=OneWay}"
-                                 StrokeThickness="0">
-                        </Ellipse>
-                        <Path Data="m 131.005,491 c -7.90265,-0.64183 -4.98979,-10.71809 1.39729,-11.32901 10.99496,-6.2532 22.45102,-14.5629 26.27286,-27.22295 2.23916,-5.6559 -0.53342,-11.38341 -4.70039,-15.25694 -6.49351,-6.10844 -11.06009,-14.01168 -13.3008,-22.63351 -5.89396,-22.1884 -0.0249,-45.54521 8.63616,-66.16372 2.6812,-5.54551 4.768,-11.65448 8.71779,-16.41657 6.60737,-4.37613 11.1016,6.416 4.54137,9.54476 -11.88548,13.833 -20.47647,31.95072 -18.68588,50.53631 1.97785,13.01851 7.63748,25.10284 14.14367,36.41872 6.40477,12.56843 5.59896,28.28385 -2.11612,40.1132 -5.85161,9.18707 -14.0309,17.11834 -23.64632,22.24796 z"
+                                 StrokeThickness="0"
+                                 IsManipulationEnabled="{Binding IsFadingOut, Mode=OneWay}" />
+                        <Path Name="twine"
+                              Data="m 131.005,491 c -7.90265,-0.64183 -4.98979,-10.71809 1.39729,-11.32901 10.99496,-6.2532 22.45102,-14.5629 26.27286,-27.22295 2.23916,-5.6559 -0.53342,-11.38341 -4.70039,-15.25694 -6.49351,-6.10844 -11.06009,-14.01168 -13.3008,-22.63351 -5.89396,-22.1884 -0.0249,-45.54521 8.63616,-66.16372 2.6812,-5.54551 4.768,-11.65448 8.71779,-16.41657 6.60737,-4.37613 11.1016,6.416 4.54137,9.54476 -11.88548,13.833 -20.47647,31.95072 -18.68588,50.53631 1.97785,13.01851 7.63748,25.10284 14.14367,36.41872 6.40477,12.56843 5.59896,28.28385 -2.11612,40.1132 -5.85161,9.18707 -14.0309,17.11834 -23.64632,22.24796 z"
                               Margin="{Binding TwineMargin, Mode=OneWay}"
                               Fill="{Binding TwineColor, Mode=OneWay}"
                               Height="20"
@@ -83,6 +57,40 @@
                               HorizontalAlignment="Left"
                               VerticalAlignment="Top" />
                     </StackPanel>
+                    <DataTemplate.Triggers>
+                        <Trigger SourceName="baloon"
+                                 Property="IsManipulationEnabled"
+                                 Value="true">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="baloon"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:00:03" />
+                                        <DoubleAnimation Storyboard.TargetName="twine"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:00:03" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                        <Trigger SourceName="wholeBaloon"
+                                 Property="IsManipulationEnabled"
+                                 Value="true">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ThicknessAnimation Storyboard.TargetName="wholeBaloon"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="-1000"
+                                                            Duration="0:00:05" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

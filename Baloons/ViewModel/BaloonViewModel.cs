@@ -57,6 +57,13 @@ namespace Baloons.ViewModel
             set => Set(ref isRunningOut, value);
         }
 
+        bool isFadingOut = false;
+        public bool IsFadingOut
+        {
+            get => isFadingOut;
+            set => Set(ref isFadingOut, value);
+        }
+
         internal void Inflate()
         {
             baloon.Blow();
