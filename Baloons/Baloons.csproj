@@ -123,5 +123,8 @@
   <ItemGroup>
     <Resource Include="Images\yckrdpjdi.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cannon.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

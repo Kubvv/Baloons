@@ -26,7 +26,7 @@
                     Key="Esc" />
     </Window.InputBindings>
     <Grid>
-        <ItemsControl ItemsSource="{Binding Path=Baloons}">
+        <ItemsControl ItemsSource="{Binding Path=BaloonsSet}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas />

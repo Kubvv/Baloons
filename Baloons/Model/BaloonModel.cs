@@ -12,6 +12,7 @@ namespace Baloons.Model
         public int Radius { get; private set; }
         public Brush Color { get; private set; }
         public Brush TwineColor { get; private set; }
+        public int Frequency => 500 + (int) Math.Round(4000.0 * Radius / maxRadius);
 
         public event EventHandler BlownUp;
 

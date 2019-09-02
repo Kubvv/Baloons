@@ -66,6 +66,7 @@ namespace Baloons.ViewModel
         internal void Inflate()
         {
             baloon.Blow();
+            Console.Beep(baloon.Frequency, 15);
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
@@ -75,6 +76,7 @@ namespace Baloons.ViewModel
         internal void Deflate()
         {
             baloon.Release();
+            Console.Beep(baloon.Frequency, 15);
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
