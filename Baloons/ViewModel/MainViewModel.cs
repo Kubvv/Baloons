@@ -1,3 +1,4 @@
+using Baloons.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
@@ -5,11 +6,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Media;
 using System.Windows;
+using Toub.Sound.Midi;
 
 namespace Baloons.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private readonly BaloonManager baloonManager;
         private bool isBaloonBlownUp = false;
 
         private BaloonViewModel currentBaloon;
@@ -19,14 +22,40 @@ namespace Baloons.ViewModel
         public ObservableCollection<BaloonViewModel> BaloonsSet { get => baloonsSet; set => Set(ref baloonsSet, value); }
 
         private double canvasWidth = 800;
-        public double CanvasWidth { get => canvasWidth; set => Set(ref canvasWidth, value); }
+        public double CanvasWidth
+        {
+            get => canvasWidth;
+            set
+            {
+                baloonManager.CanvasWidth = value;
+                Set(ref canvasWidth, value);
+            }
+        }
 
         private double canvasHeight = 450;
-        public double CanvasHeight { get => canvasHeight; set => Set(ref canvasHeight, value); }
+        public double CanvasHeight
+        {
+            get => canvasHeight;
+            set
+            {
+                baloonManager.CanvasHeight = value;
+                Set(ref canvasHeight, value);
+            }
+        }
 
         public MainViewModel()
         {
-            ExecuteNewBaloon();
+            baloonManager = new BaloonManager
+            {
+                CanvasWidth = canvasWidth,
+                CanvasHeight = canvasHeight
+            };
+            MidiPlayer.OpenMidi();
+        }
+
+        ~MainViewModel()
+        {
+            MidiPlayer.CloseMidi();
         }
 
         private RelayCommand newBaloonCommand;
@@ -44,7 +73,7 @@ namespace Baloons.ViewModel
             {
                 BaloonsSet.Add(CurrentBaloon);
             }
-            CurrentBaloon = new BaloonViewModel(CanvasWidth, CanvasHeight);
+            CurrentBaloon = new BaloonViewModel(baloonManager);
             CurrentBaloon.BlownUp += BaloonBlownUp;
         }
 

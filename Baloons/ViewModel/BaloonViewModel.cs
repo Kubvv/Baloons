@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight;
 using System;
 using System.Windows;
 using System.Windows.Media;
+using Toub.Sound.Midi;
 
 namespace Baloons.ViewModel
 {
@@ -12,15 +13,16 @@ namespace Baloons.ViewModel
 
         public event EventHandler BlownUp;
 
-        public BaloonViewModel(double width, double height)
+        public BaloonViewModel(BaloonManager baloonManager)
         {
-            baloon = new BaloonModel(width, height);
+            baloon = baloonManager.NewBaloon();
             baloon.BlownUp += BaloonBlownUp;
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
             RaisePropertyChanged("Color");
             RaisePropertyChanged("TwineMargin");
+            MidiPlayer.Play(new NoteOn(0, 1, "C2", 127));
         }
 
         Thickness margin = new Thickness(0);
@@ -63,24 +65,30 @@ namespace Baloons.ViewModel
             set => Set(ref isFadingOut, value);
         }
 
-        internal void Inflate()
+        public void Inflate()
         {
             baloon.Blow();
-            Console.Beep(baloon.Frequency, 15);
+            MidiPlayer.Play(new NoteOn(0, 1, MidiNote(), 127));
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
             RaisePropertyChanged("TwineMargin");
         }
 
-        internal void Deflate()
+        public void Deflate()
         {
             baloon.Release();
-            Console.Beep(baloon.Frequency, 15);
+            MidiPlayer.Play(new NoteOn(0, 1, MidiNote(), 127));
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
             RaisePropertyChanged("TwineMargin");
+        }
+
+        public void SetCenter(double x, double y)
+        {
+            baloon.SetCenter(x, y);
+            RaisePropertyChanged("Margin");
         }
 
         private void BaloonBlownUp(object baloonModel, EventArgs e)
@@ -88,9 +96,15 @@ namespace Baloons.ViewModel
             BlownUp?.Invoke(baloonModel, e);
         }
 
-        internal void SetCenter(double x, double y)
+        private string MidiNote()
         {
-            baloon.SetCenter(x, y);
+            string notes = "CDEFGAB";
+            int startOctave = 2, endOctave = 7;
+            double factor = (endOctave - startOctave + 1.0) * baloon.Radius / baloon.MaxRadius;
+            int octave = (int)Math.Floor(factor) + startOctave;
+            int note = (int)Math.Floor((factor - Math.Floor(factor)) * notes.Length);
+            string result = $"{notes.Substring(note, 1)}{octave}";
+            return result;
         }
     }
 }

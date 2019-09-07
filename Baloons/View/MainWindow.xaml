@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Baloons"
         mc:Ignorable="d"
-        Title="MainWindow"
+        Title="Baloons"
         DataContext="{Binding MainViewModelInstance, Mode=OneWay, Source={StaticResource Locator}}"
         Height="{Binding CanvasHeight, Mode=TwoWay}"
         Width="{Binding CanvasWidth, Mode=TwoWay}"
