@@ -80,7 +80,7 @@
     <Compile Include="Model\BaloonManager.cs" />
     <Compile Include="Model\BaloonModel.cs" />
     <Compile Include="Model\RandomColor.cs" />
-    <Compile Include="Model\RandomMusic.cs" />
+    <Compile Include="Model\RandomFile.cs" />
     <Compile Include="ViewModel\BaloonViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

@@ -47,18 +47,17 @@ namespace Baloons.Model
             };
         }
 
-        public Brush SelectedBrush()
+        public Color Next()
+        {
+            return Color.FromArgb(RandomOpacity, (byte)random.Next(256), (byte)random.Next(256), (byte)random.Next(256));
+        }
+
+        public Color SelectedNext()
         {
             int randomColor = random.Next(selectedColors.Count);
             Color color = selectedColors[randomColor];
             color.A = RandomOpacity;
-            return new SolidColorBrush(color);
-        }
-
-        public Brush RandomBrush()
-        {
-            return new SolidColorBrush(Color.FromArgb(RandomOpacity,
-                (byte)random.Next(256), (byte)random.Next(256), (byte)random.Next(256)));
+            return color;
         }
 
         public byte RandomOpacity => (byte)(random.Next(128) + 128);
