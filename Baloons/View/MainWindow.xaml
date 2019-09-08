@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Baloons"
         mc:Ignorable="d"
-        Title="MainWindow"
+        Title="Baloons"
         DataContext="{Binding MainViewModelInstance, Mode=OneWay, Source={StaticResource Locator}}"
         Height="{Binding CanvasHeight, Mode=TwoWay}"
         Width="{Binding CanvasWidth, Mode=TwoWay}"
@@ -26,7 +26,7 @@
                     Key="Esc" />
     </Window.InputBindings>
     <Grid>
-        <ItemsControl ItemsSource="{Binding Path=Baloons}">
+        <ItemsControl ItemsSource="{Binding Path=BaloonsSet}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas />
@@ -84,8 +84,8 @@
                                     <Storyboard>
                                         <ThicknessAnimation Storyboard.TargetName="wholeBaloon"
                                                             Storyboard.TargetProperty="Margin"
-                                                            To="-1000"
-                                                            Duration="0:00:05" />
+                                                            To="-3000"
+                                                            Duration="0:00:10" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>

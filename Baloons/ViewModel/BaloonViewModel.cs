@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight;
 using System;
 using System.Windows;
 using System.Windows.Media;
+using Toub.Sound.Midi;
 
 namespace Baloons.ViewModel
 {
@@ -12,15 +13,16 @@ namespace Baloons.ViewModel
 
         public event EventHandler BlownUp;
 
-        public BaloonViewModel(double width, double height)
+        public BaloonViewModel(BaloonManager baloonManager)
         {
-            baloon = new BaloonModel(width, height);
+            baloon = baloonManager.NewBaloon();
             baloon.BlownUp += BaloonBlownUp;
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
             RaisePropertyChanged("Color");
             RaisePropertyChanged("TwineMargin");
+            MidiPlayer.Play(baloon.Note);
         }
 
         Thickness margin = new Thickness(0);
@@ -63,32 +65,35 @@ namespace Baloons.ViewModel
             set => Set(ref isFadingOut, value);
         }
 
-        internal void Inflate()
+        public void Inflate()
         {
             baloon.Blow();
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
             RaisePropertyChanged("TwineMargin");
+            MidiPlayer.Play(baloon.Note);
         }
 
-        internal void Deflate()
+        public void Deflate()
         {
             baloon.Release();
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
             RaisePropertyChanged("TwineMargin");
+            MidiPlayer.Play(baloon.Note);
+        }
+
+        public void SetCenter(double x, double y)
+        {
+            baloon.SetCenter(x, y);
+            RaisePropertyChanged("Margin");
         }
 
         private void BaloonBlownUp(object baloonModel, EventArgs e)
         {
             BlownUp?.Invoke(baloonModel, e);
-        }
-
-        internal void SetCenter(double x, double y)
-        {
-            baloon.SetCenter(x, y);
         }
     }
 }

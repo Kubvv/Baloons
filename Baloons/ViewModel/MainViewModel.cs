@@ -1,32 +1,55 @@
+using Baloons.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Media;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Baloons.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private readonly BaloonManager baloonManager;
         private bool isBaloonBlownUp = false;
+        private readonly MediaPlayer mediaPlayer = new MediaPlayer();
 
         private BaloonViewModel currentBaloon;
         public BaloonViewModel CurrentBaloon { get => currentBaloon; set => Set(ref currentBaloon, value); }
 
-        private ObservableCollection<BaloonViewModel> baloons = new ObservableCollection<BaloonViewModel>();
-        public ObservableCollection<BaloonViewModel> Baloons { get => baloons; set => Set(ref baloons, value); }
+        private ObservableCollection<BaloonViewModel> baloonsSet = new ObservableCollection<BaloonViewModel>();
+        public ObservableCollection<BaloonViewModel> BaloonsSet { get => baloonsSet; set => Set(ref baloonsSet, value); }
 
         private double canvasWidth = 800;
-        public double CanvasWidth { get => canvasWidth; set => Set(ref canvasWidth, value); }
+        public double CanvasWidth
+        {
+            get => canvasWidth;
+            set
+            {
+                baloonManager.CanvasWidth = value;
+                Set(ref canvasWidth, value);
+            }
+        }
 
         private double canvasHeight = 450;
-        public double CanvasHeight { get => canvasHeight; set => Set(ref canvasHeight, value); }
+        public double CanvasHeight
+        {
+            get => canvasHeight;
+            set
+            {
+                baloonManager.CanvasHeight = value;
+                Set(ref canvasHeight, value);
+            }
+        }
 
         public MainViewModel()
         {
-            ExecuteNewBaloon();
+            baloonManager = new BaloonManager
+            {
+                CanvasWidth = canvasWidth,
+                CanvasHeight = canvasHeight
+            };
         }
 
         private RelayCommand newBaloonCommand;
@@ -36,15 +59,16 @@ namespace Baloons.ViewModel
         {
             if (isBaloonBlownUp)
             {
-                Baloons.Clear();
+                BaloonsSet.Clear();
                 CurrentBaloon = null;
                 isBaloonBlownUp = false;
             }
             if (CurrentBaloon != null)
             {
-                Baloons.Add(CurrentBaloon);
+                BaloonsSet.Add(CurrentBaloon);
             }
-            CurrentBaloon = new BaloonViewModel(CanvasWidth, CanvasHeight);
+            mediaPlayer.Stop();
+            CurrentBaloon = new BaloonViewModel(baloonManager);
             CurrentBaloon.BlownUp += BaloonBlownUp;
         }
 
@@ -59,6 +83,9 @@ namespace Baloons.ViewModel
 
         private void BaloonBlownUp(object baloonModel, EventArgs e)
         {
+            mediaPlayer.Open(baloonManager.RandomSound);
+            mediaPlayer.Play();
+
             BlowUpEffects blowUpEffect;
             Random random = new Random();
             int effect = random.Next(3);
@@ -76,32 +103,31 @@ namespace Baloons.ViewModel
             }
 
             isBaloonBlownUp = true;
-            Baloons.Add(CurrentBaloon);
+            BaloonsSet.Add(CurrentBaloon);
             CurrentBaloon = null;
 
             if (blowUpEffect == BlowUpEffects.Rainbow)
             {
-                Baloons = new ObservableCollection<BaloonViewModel>(Baloons.OrderBy(baloon => baloon.Height).Reverse());
-                foreach (BaloonViewModel baloonViewModel in Baloons)
+                BaloonsSet = new ObservableCollection<BaloonViewModel>(BaloonsSet.OrderBy(baloon => baloon.Height).Reverse());
+                foreach (BaloonViewModel baloonViewModel in BaloonsSet)
                 {
                     baloonViewModel.SetCenter(CanvasWidth / 2, CanvasHeight - 10);
                 }
             }
             else if (blowUpEffect == BlowUpEffects.RunOut)
             {
-                foreach (BaloonViewModel baloonViewModel in Baloons)
+                foreach (BaloonViewModel baloonViewModel in BaloonsSet)
                 {
                     baloonViewModel.IsRunningOut = true;
                 }
             }
             else if (blowUpEffect == BlowUpEffects.FadeOut)
             {
-                foreach (BaloonViewModel baloonViewModel in Baloons)
+                foreach (BaloonViewModel baloonViewModel in BaloonsSet)
                 {
                     baloonViewModel.IsFadingOut = true;
                 }
             }
-            SystemSounds.Beep.Play();
         }
     }
 
