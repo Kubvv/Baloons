@@ -84,8 +84,8 @@
                                     <Storyboard>
                                         <ThicknessAnimation Storyboard.TargetName="wholeBaloon"
                                                             Storyboard.TargetProperty="Margin"
-                                                            To="-1000"
-                                                            Duration="0:00:05" />
+                                                            To="-3000"
+                                                            Duration="0:00:10" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>

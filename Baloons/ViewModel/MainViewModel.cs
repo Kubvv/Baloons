@@ -4,9 +4,8 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Media;
 using System.Windows;
-using Toub.Sound.Midi;
+using System.Windows.Media;
 
 namespace Baloons.ViewModel
 {
@@ -14,6 +13,7 @@ namespace Baloons.ViewModel
     {
         private readonly BaloonManager baloonManager;
         private bool isBaloonBlownUp = false;
+        private readonly MediaPlayer mediaPlayer = new MediaPlayer();
 
         private BaloonViewModel currentBaloon;
         public BaloonViewModel CurrentBaloon { get => currentBaloon; set => Set(ref currentBaloon, value); }
@@ -50,12 +50,6 @@ namespace Baloons.ViewModel
                 CanvasWidth = canvasWidth,
                 CanvasHeight = canvasHeight
             };
-            MidiPlayer.OpenMidi();
-        }
-
-        ~MainViewModel()
-        {
-            MidiPlayer.CloseMidi();
         }
 
         private RelayCommand newBaloonCommand;
@@ -73,6 +67,7 @@ namespace Baloons.ViewModel
             {
                 BaloonsSet.Add(CurrentBaloon);
             }
+            mediaPlayer.Stop();
             CurrentBaloon = new BaloonViewModel(baloonManager);
             CurrentBaloon.BlownUp += BaloonBlownUp;
         }
@@ -88,8 +83,8 @@ namespace Baloons.ViewModel
 
         private void BaloonBlownUp(object baloonModel, EventArgs e)
         {
-            SoundPlayer soundPlayer = new SoundPlayer(Baloons.Properties.Resources.cannon);
-            soundPlayer.Play();
+            mediaPlayer.Open(baloonManager.RandomSound);
+            mediaPlayer.Play();
 
             BlowUpEffects blowUpEffect;
             Random random = new Random();

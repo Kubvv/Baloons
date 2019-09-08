@@ -59,14 +59,5 @@ namespace Baloons.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Wyszukuje zlokalizowany zasób typu System.IO.UnmanagedMemoryStream podobny do zasobu System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream cannon {
-            get {
-                return ResourceManager.GetStream("cannon", resourceCulture);
-            }
-        }
     }
 }
