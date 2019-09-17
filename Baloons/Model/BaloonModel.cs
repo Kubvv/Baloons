@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
-using Toub.Sound.Midi;
 
 namespace Baloons.Model
 {
     public class BaloonModel
     {
         const string notes = "CDEFGAB";
-        const int startOctave = 2, endOctave = 7;
+        const int startOctave = 4, endOctave = 7;
 
         public Point Center { get; set; }
         public int Radius { get; set; }
         public int MaxRadius { get; set; }
         public Brush Color { get; set; }
         public Brush TwineColor { get; set; }
-        public NoteOn Note => new NoteOn(0, 1, MidiNote(), 127);
+        public string Note => MidiNote();
 
         public event EventHandler BlownUp;
 

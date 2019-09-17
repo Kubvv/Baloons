@@ -3,18 +3,19 @@ using GalaSoft.MvvmLight;
 using System;
 using System.Windows;
 using System.Windows.Media;
-using Toub.Sound.Midi;
 
 namespace Baloons.ViewModel
 {
     public class BaloonViewModel : ViewModelBase
     {
         private readonly BaloonModel baloon;
+        private readonly BaloonManager baloonManager;
 
         public event EventHandler BlownUp;
 
         public BaloonViewModel(BaloonManager baloonManager)
         {
+            this.baloonManager = baloonManager;
             baloon = baloonManager.NewBaloon();
             baloon.BlownUp += BaloonBlownUp;
             RaisePropertyChanged("Margin");
@@ -22,7 +23,6 @@ namespace Baloons.ViewModel
             RaisePropertyChanged("Width");
             RaisePropertyChanged("Color");
             RaisePropertyChanged("TwineMargin");
-            MidiPlayer.Play(baloon.Note);
         }
 
         Thickness margin = new Thickness(0);
@@ -67,22 +67,20 @@ namespace Baloons.ViewModel
 
         public void Inflate()
         {
-            baloon.Blow();
+            baloonManager.Blow(baloon);
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
             RaisePropertyChanged("TwineMargin");
-            MidiPlayer.Play(baloon.Note);
         }
 
         public void Deflate()
         {
-            baloon.Release();
+            baloonManager.Release(baloon);
             RaisePropertyChanged("Margin");
             RaisePropertyChanged("Height");
             RaisePropertyChanged("Width");
             RaisePropertyChanged("TwineMargin");
-            MidiPlayer.Play(baloon.Note);
         }
 
         public void SetCenter(double x, double y)
