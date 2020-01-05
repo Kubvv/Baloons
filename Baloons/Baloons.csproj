@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Images\Iconsmind-Outline-Balloon.ico</ApplicationIcon>
+    <ApplicationIcon>Images\Baloons.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -125,15 +125,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Iconsmind-Outline-Balloon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\yckrdpjdi.png" />
+    <Resource Include="Images\Clouds.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\cannon.wav" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\Baloons.ico" />
     <Content Include="Sounds\Alladin.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

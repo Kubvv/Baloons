@@ -12,7 +12,7 @@
         WindowState="Maximized"
         WindowStyle="None">
     <Window.Background>
-        <ImageBrush ImageSource="/Baloons;component/Images/yckrdpjdi.png"
+        <ImageBrush ImageSource="/Baloons;component/Images/Clouds.png"
                     TileMode="Tile" />
     </Window.Background>
     <Window.InputBindings>
