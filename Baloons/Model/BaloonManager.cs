@@ -37,11 +37,12 @@ namespace Baloons.Model
         public BaloonModel NewBaloon()
         {
             int maxDim = (int)Math.Max(CanvasWidth, CanvasHeight);
-            int radius = 10;
+            int maxRadius = random.Next(maxDim / 2) + 100;
+            int radius = random.Next(maxRadius / 5) + 10;
             BaloonModel baloon = new BaloonModel
             {
+                MaxRadius = maxRadius,
                 Radius = radius,
-                MaxRadius = random.Next(maxDim / 2) + 100,
                 Center = new Point(random.Next((int)CanvasWidth - radius * 2) + radius, random.Next((int)CanvasHeight - radius * 2) + radius),
                 Color = new SolidColorBrush(randomColor.SelectedNext()),
                 TwineColor = new SolidColorBrush(randomColor.SelectedNext())
