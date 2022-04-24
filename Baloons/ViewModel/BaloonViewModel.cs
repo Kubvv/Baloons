@@ -1,31 +1,31 @@
 ﻿using Baloons.Model;
-using GalaSoft.MvvmLight;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using System;
 using System.Windows;
 using System.Windows.Media;
 
 namespace Baloons.ViewModel
 {
-    public class BaloonViewModel : ViewModelBase
+    public class BaloonViewModel : ObservableRecipient
     {
         private readonly BaloonModel baloon;
         private readonly BaloonManager baloonManager;
 
-        public event EventHandler BlownUp;
+        public event EventHandler? BlownUp;
 
         public BaloonViewModel(BaloonManager baloonManager)
         {
             this.baloonManager = baloonManager;
             baloon = baloonManager.NewBaloon();
             baloon.BlownUp += BaloonBlownUp;
-            RaisePropertyChanged("Margin");
-            RaisePropertyChanged("Height");
-            RaisePropertyChanged("Width");
-            RaisePropertyChanged("Color");
-            RaisePropertyChanged("TwineMargin");
+            OnPropertyChanged(nameof(Margin));
+            OnPropertyChanged(nameof(Height));
+            OnPropertyChanged(nameof(Width));
+            OnPropertyChanged(nameof(Color));
+            OnPropertyChanged(nameof(TwineMargin));
         }
 
-        Thickness margin = new Thickness(0);
+        Thickness margin = new(0);
         public Thickness Margin
         {
             get
@@ -36,7 +36,7 @@ namespace Baloons.ViewModel
             }
         }
 
-        Thickness twineMargin = new Thickness(0);
+        Thickness twineMargin = new(0);
         public Thickness TwineMargin
         {
             get
@@ -55,41 +55,41 @@ namespace Baloons.ViewModel
         public bool IsRunningOut
         {
             get => isRunningOut;
-            set => Set(ref isRunningOut, value);
+            set => SetProperty(ref isRunningOut, value);
         }
 
         bool isFadingOut = false;
         public bool IsFadingOut
         {
             get => isFadingOut;
-            set => Set(ref isFadingOut, value);
+            set => SetProperty(ref isFadingOut, value);
         }
 
         public void Inflate()
         {
             baloonManager.Blow(baloon);
-            RaisePropertyChanged("Margin");
-            RaisePropertyChanged("Height");
-            RaisePropertyChanged("Width");
-            RaisePropertyChanged("TwineMargin");
+            OnPropertyChanged(nameof(Margin));
+            OnPropertyChanged(nameof(Height));
+            OnPropertyChanged(nameof(Width));
+            OnPropertyChanged(nameof(TwineMargin));
         }
 
         public void Deflate()
         {
             baloonManager.Release(baloon);
-            RaisePropertyChanged("Margin");
-            RaisePropertyChanged("Height");
-            RaisePropertyChanged("Width");
-            RaisePropertyChanged("TwineMargin");
+            OnPropertyChanged(nameof(Margin));
+            OnPropertyChanged(nameof(Height));
+            OnPropertyChanged(nameof(Width));
+            OnPropertyChanged(nameof(TwineMargin));
         }
 
         public void SetCenter(double x, double y)
         {
             baloon.SetCenter(x, y);
-            RaisePropertyChanged("Margin");
+            OnPropertyChanged(nameof(Margin));
         }
 
-        private void BaloonBlownUp(object baloonModel, EventArgs e)
+        private void BaloonBlownUp(object? baloonModel, EventArgs e)
         {
             BlownUp?.Invoke(baloonModel, e);
         }

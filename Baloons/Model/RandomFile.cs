@@ -7,31 +7,26 @@ namespace Baloons.Model
     public class RandomFile
     {
         private readonly string folder, pattern;
-        private readonly Random random = new Random();
+        private readonly Random random = new();
         private List<string> files;
 
         public RandomFile(string folder, string pattern)
         {
             this.folder = folder;
             this.pattern = pattern;
-            Reset();
+            files = GetFileList();
         }
 
-        public void Reset()
-        {
-            files = new List<string>(Directory.GetFiles(folder, pattern));
-        }
-
-        public string Next()
-        {
-            return files[random.Next(files.Count)];
-        }
+        public string Next() => files.Count > 0 ? files[random.Next(files.Count)] : string.Empty;
 
         public string ExclusiveNext()
         {
-            string result = null;
+            string result = string.Empty;
 
-            if (files.Count <= 0) Reset();
+            if (files.Count <= 0)
+            {
+                files = GetFileList();
+            }
 
             if (files.Count > 0)
             {
@@ -42,5 +37,7 @@ namespace Baloons.Model
 
             return result;
         }
+
+        private List<string> GetFileList() => new(Directory.GetFiles(folder, pattern));
     }
 }

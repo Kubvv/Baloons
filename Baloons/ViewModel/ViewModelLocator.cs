@@ -1,19 +1,6 @@
-/*
-  In App.xaml:
-  <Application.Resources>
-      <vm:ViewModelLocator xmlns:vm="clr-namespace:Baloons"
-                           x:Key="Locator" />
-  </Application.Resources>
-  
-  In the View:
-  DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
-
-  You can also use Blend to do all this with the tool's support.
-  See http://www.galasoft.ch/mvvm
-*/
-
-using CommonServiceLocator;
-using GalaSoft.MvvmLight.Ioc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using System;
 
 namespace Baloons.ViewModel
 {
@@ -28,30 +15,14 @@ namespace Baloons.ViewModel
         /// </summary>
         public ViewModelLocator()
         {
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
-
-            SimpleIoc.Default.Register<MainViewModel>();
+            Ioc.Default.ConfigureServices(new ServiceCollection()
+                .AddSingleton<MainViewModel>()
+                .BuildServiceProvider());
         }
 
-        public MainViewModel MainViewModelInstance
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
-            }
-        }
-        
+        public MainViewModel MainInstance => Ioc.Default.GetService<MainViewModel>() ??
+            throw new Exception(string.Format(Consts.ServiceNotFound, nameof(MainViewModel)));
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

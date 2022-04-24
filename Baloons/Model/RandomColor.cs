@@ -6,7 +6,7 @@ namespace Baloons.Model
 {
     public class RandomColor
     {
-        private readonly Random random = new Random();
+        private readonly Random random = new();
         private readonly List<Color> selectedColors;
 
         public RandomColor()

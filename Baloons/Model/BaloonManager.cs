@@ -1,51 +1,44 @@
-﻿using System;
+﻿using Commons.Music.Midi;
+using System;
 using System.IO;
-using System.Windows;
-using System.Windows.Media;
+using System.Linq;
 using System.Windows.Threading;
-using Toub.Sound.Midi;
 
 namespace Baloons.Model
 {
     public class BaloonManager
     {
-        private readonly Random random = new Random();
-        private readonly RandomColor randomColor = new RandomColor();
         private readonly RandomFile randomSound;
-        private readonly DispatcherTimer noteTimer = new DispatcherTimer();
-        private string currentNote;
+        private readonly DispatcherTimer noteTimer = new();
+        private byte currentNote = 0;
+#pragma warning disable CS0618 // Type or member is obsolete
+        private readonly IMidiAccess access;
+#pragma warning restore CS0618 // Type or member is obsolete
+        private readonly IMidiOutput output;
 
         public double CanvasWidth { get; set; }
         public double CanvasHeight { get; set; }
 
-        public Uri RandomSound => new Uri(randomSound.ExclusiveNext());
+        public Uri RandomSound => new(randomSound.ExclusiveNext());
 
         public BaloonManager()
         {
             randomSound = new RandomFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds"), "*.mp3");
             noteTimer.Tick += NoteTimerTick;
             noteTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
-            MidiPlayer.OpenMidi();
-            MidiPlayer.Play(new ProgramChange(0, 1, GeneralMidiInstruments.PanFlute));
+            access = MidiAccessManager.Default;
+            output = access.OpenOutputAsync(access.Outputs.Last().Id).Result;
+            output.Send(new byte[] { 0xC0, GeneralMidi.Instruments.PanFlute }, 0, 2, 0);
         }
 
         ~BaloonManager()
         {
-            MidiPlayer.CloseMidi();
+            output.CloseAsync();
         }
 
         public BaloonModel NewBaloon()
         {
-            int maxDim = (int)Math.Max(CanvasWidth, CanvasHeight);
-            int radius = 10;
-            BaloonModel baloon = new BaloonModel
-            {
-                Radius = radius,
-                MaxRadius = random.Next(maxDim / 2) + 100,
-                Center = new Point(random.Next((int)CanvasWidth - radius * 2) + radius, random.Next((int)CanvasHeight - radius * 2) + radius),
-                Color = new SolidColorBrush(randomColor.SelectedNext()),
-                TwineColor = new SolidColorBrush(randomColor.SelectedNext())
-            };
+            BaloonModel baloon = new(CanvasWidth, CanvasHeight);
             PlayNote(baloon);
             return baloon;
         }
@@ -62,20 +55,33 @@ namespace Baloons.Model
             PlayNote(baloon);
         }
 
+        private void PlayStart()
+        {
+            output.Send(new byte[] { MidiEvent.NoteOn, currentNote, 127 }, 0, 3, 0);
+        }
+
+        private void PlayStop()
+        {
+            output.Send(new byte[] { MidiEvent.NoteOff, currentNote, 127 }, 0, 2, 0);
+        }
+
         private void PlayNote(BaloonModel baloon)
         {
             noteTimer.Stop();
-            if (currentNote != null) MidiPlayer.Play(new NoteOff(0, 1, currentNote, 127));
-            currentNote = baloon.Note;
-            MidiPlayer.Play(new NoteOn(0, 1, currentNote, 127));
+            if (currentNote != 0)
+            {
+                PlayStop();
+            }
+            currentNote = baloon.NoteId;
+            PlayStart();
             noteTimer.Start();
         }
 
-        private void NoteTimerTick(object sender, EventArgs e)
+        private void NoteTimerTick(object? sender, EventArgs e)
         {
             noteTimer.Stop();
-            MidiPlayer.Play(new NoteOff(0, 1, currentNote, 127));
-            currentNote = null;
+            PlayStop();
+            currentNote = 0;
         }
     }
 }
